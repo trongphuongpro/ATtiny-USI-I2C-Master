@@ -7,8 +7,10 @@ void USI_I2C_master_init() {
 	USI_DDR |= (1 << USI_SCL) | (1 << USI_SDA);
 	USI_PORT |= (1 << USI_SCL) | (1 << USI_SDA);
 	
-	USICR = (1 << USIWM1) | (1 << USICS1) | (1 << USICLK);	// External, positive edge; software clock strobe (USITC)
-	USISR = (1 << USISIF) | (1 << USIOIF) | (1 << USIPF) | (1 << USIDC);	// clear Interrupt Flags and Counter.
+	// External, positive edge; software clock strobe (USITC)
+	USICR = (1 << USIWM1) | (1 << USICS1) | (1 << USICLK);	
+	// clear Interrupt Flags and Counter.
+	USISR = (1 << USISIF) | (1 << USIOIF) | (1 << USIPF) | (1 << USIDC);	
 	USIDR =	0xFF;
 }
 
@@ -29,16 +31,18 @@ uint8_t USI_I2C_master_start(uint8_t address, uint8_t mode) {
 	pullSCL();
 	_delay_us(HIGH_PERIOD);
 	releaseSDA();
-	//********************
 	
-	// transmit ADDRESS
-	pullSCL();	// pull SCL to LOW
-	USIDR = (address << 1) + mode;	// mode = 1 - READ, 0 - WRITE, load SLA+W to USIDR
-	USI_I2C_master_transfer(USI_DATA);	// transfer SLA+W
+	// pull SCL to LOW
+	pullSCL();	
+	// mode = 1 - READ, 0 - WRITE, load SLA+W to USIDR
+	USIDR = (address << 1) + mode;	
+	// transfer SLA+R/W
+	USI_I2C_master_transfer(USI_DATA);	
 	
-	USI_DDR &= ~(1 << USI_SDA);	// set SDA as input to read ACK
-	
-	if (USI_I2C_master_transfer(USI_ACK) & 0x01) 	// read ACK from SLAVE
+	// set SDA as input to read ACK
+	USI_DDR &= ~(1 << USI_SDA);	
+	// read ACK from SLAVE
+	if (USI_I2C_master_transfer(USI_ACK) & 0x01) 	
 		return 1;
 	
 	return 0;
@@ -48,7 +52,7 @@ uint8_t USI_I2C_master_start(uint8_t address, uint8_t mode) {
  // TRANSFER STOP CONDITION //
 /////////////////////////////
 void USI_I2C_master_stop() {
-	// release and wait for SCL, SDA to HIGH
+	// pull SDA,release and wait for SCL to HIGH
 	pullSDA();
 	releaseSCL();
 	while (!(USI_PORT & (1 << USI_SCL)));
@@ -64,13 +68,17 @@ void USI_I2C_master_stop() {
  // TRANSMIT DATA //
 ///////////////////
 uint8_t USI_I2C_master_transmit(uint8_t data) {
-	pullSCL();	// pull SCL to LOW
-	USIDR = data;	// load data to USIDR
-	USI_I2C_master_transfer(USI_DATA);	// transfer data
+	// pull SCL to LOW
+	pullSCL();	
+	// load data to USIDR
+	USIDR = data;	
+	// transfer data
+	USI_I2C_master_transfer(USI_DATA);	
 	
-	USI_DDR &= ~(1 << USI_SDA);	// set SDA as input
-	
-	if (USI_I2C_master_transfer(USI_ACK) & 0x01) 	// read ACK from SLAVE
+	// set SDA as input
+	USI_DDR &= ~(1 << USI_SDA);	
+	// read ACK from SLAVE
+	if (USI_I2C_master_transfer(USI_ACK) & 0x01) 	
 		return 1;
 	
 	return 0;
@@ -107,10 +115,12 @@ uint8_t USI_I2C_master_transfer(uint8_t mode) {
 
 	// Data transmission
 	do {
-		USICR |= (1 << USITC);  // Positive SCL edge
+		// Positive SCL edge
+		USICR |= (1 << USITC);  
 		while (!(USI_PORT & (1 << USI_SCL)));
 		_delay_us(HIGH_PERIOD);
-		USICR |= (1 << USITC);	 // Negative SCL edge
+		// Negative SCL edge
+		USICR |= (1 << USITC);	 
 		_delay_us(LOW_PERIOD);
 	} while (!(USISR & (1 << USIOIF)));
 	
