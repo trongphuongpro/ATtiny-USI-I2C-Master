@@ -9,11 +9,6 @@
 	#define cbi(port, bit)	(port) &= ~(1 << bit)
 #endif
 
-#define releaseSCL()	USI_PORT |= (1 << USI_SCL)
-#define releaseSDA()	USI_PORT |= (1 << USI_SDA)
-#define pullSCL()		USI_PORT &= ~(1 << USI_SCL)
-#define pullSDA()		USI_PORT &= ~(1 << USI_SDA)
-
 #if defined(__AVR_ATtiny2313__)
 	#define USI_DDR		DDRB
 	#define USI_PORT	PORTB
@@ -21,6 +16,19 @@
 	#define USI_SDA		PB5
 	#define USI_SCL		PB7
 #endif
+
+#if defined(__AVR_ATtiny85__)
+	#define USI_DDR		DDRB
+	#define USI_PORT	PORTB
+	#define USI_PIN		PINB
+	#define USI_SDA		PB0
+	#define USI_SCL		PB2
+#endif
+
+#define releaseSCL()	USI_PORT |= (1 << USI_SCL)
+#define releaseSDA()	USI_PORT |= (1 << USI_SDA)
+#define pullSCL()	USI_PORT &= ~(1 << USI_SCL)
+#define pullSDA()	USI_PORT &= ~(1 << USI_SDA)
 
 #define USI_ACK		0
 #define USI_DATA	1
