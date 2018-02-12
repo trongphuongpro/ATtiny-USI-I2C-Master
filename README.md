@@ -1,5 +1,5 @@
 # ATtiny-USI-I2C-Master
-
+Using the USI module as a I2C master
 
 ## Usage & API
 - Include the library to main program:
