@@ -10,7 +10,7 @@
 - **uint8_t USI_I2C_master_start(uint8_t address, uint8_t mode)** - Start a transmission.
   - address - Slave's address.
   - mode - USI_READ, USI_WRITE.
-  - return - 0 = Sucsessful, 1 = Fail.
+  - return - 0 = Successful, 1 = Failed.
 - **void USI_I2C_master_stop()** - Terminate the transmission.
 - **uint8_t USI_I2C_master_transmit(uint8_t data)** - Transmit a byte to Slave
 - **uint8_t USI_I2C_master_receive(uint8_t mode)** - Receive a byte from Slave.
