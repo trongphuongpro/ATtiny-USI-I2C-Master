@@ -3,8 +3,9 @@
 
 ## Usage & API
 - Include to main program:
->> #include <USI-I2C-master.h> 
-
+```C
+#include <USI-I2C-master.h> 
+```
 - void **USI_I2C_master_init()** - Initialize a I2C Master device.
 - uint8_t **USI_I2C_master_start(uint8_t address, uint8_t mode)** - Start a transmission with modes: USI_READ, USI_WRITE.
 - void **USI_I2C_master_stop()** - Terminate the transmission.
